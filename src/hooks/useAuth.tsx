@@ -1,12 +1,19 @@
-import { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { User, Session } from '@supabase/supabase-js';
-import { supabase } from '@/integrations/supabase/client';
+import { createContext, useContext, useState, ReactNode } from 'react';
+
+interface User {
+  id: string;
+  email?: string;
+  user_metadata?: {
+    full_name?: string;
+  };
+}
 
 interface AuthContextType {
   user: User | null;
-  session: Session | null;
   loading: boolean;
   signOut: () => Promise<void>;
+  signIn: (email: string, password: string) => Promise<{ error?: string }>;
+  signUp: (email: string, password: string, fullName?: string) => Promise<{ error?: string }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -16,36 +23,64 @@ interface AuthProviderProps {
 }
 
 export const AuthProvider = ({ children }: AuthProviderProps) => {
-  const [user, setUser] = useState<User | null>(null);
-  const [session, setSession] = useState<Session | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [user, setUser] = useState<User | null>(() => {
+    // Check if user is stored in localStorage
+    const stored = localStorage.getItem('auth_user');
+    return stored ? JSON.parse(stored) : null;
+  });
+  const [loading, setLoading] = useState(false);
 
-  useEffect(() => {
-    // Set up auth state listener
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (event, session) => {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
-      }
-    );
-
-    // Check for existing session
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setSession(session);
-      setUser(session?.user ?? null);
+  const signIn = async (email: string, password: string) => {
+    setLoading(true);
+    
+    // Mock authentication - in production, replace with your backend API
+    if (email && password) {
+      const mockUser: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        email,
+        user_metadata: {}
+      };
+      
+      setUser(mockUser);
+      localStorage.setItem('auth_user', JSON.stringify(mockUser));
       setLoading(false);
-    });
+      return {};
+    }
+    
+    setLoading(false);
+    return { error: 'Invalid credentials' };
+  };
 
-    return () => subscription.unsubscribe();
-  }, []);
+  const signUp = async (email: string, password: string, fullName?: string) => {
+    setLoading(true);
+    
+    // Mock registration - in production, replace with your backend API
+    if (email && password) {
+      const mockUser: User = {
+        id: Math.random().toString(36).substr(2, 9),
+        email,
+        user_metadata: {
+          full_name: fullName
+        }
+      };
+      
+      setUser(mockUser);
+      localStorage.setItem('auth_user', JSON.stringify(mockUser));
+      setLoading(false);
+      return {};
+    }
+    
+    setLoading(false);
+    return { error: 'Registration failed' };
+  };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    setUser(null);
+    localStorage.removeItem('auth_user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, session, loading, signOut }}>
+    <AuthContext.Provider value={{ user, loading, signOut, signIn, signUp }}>
       {children}
     </AuthContext.Provider>
   );

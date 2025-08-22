@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
@@ -11,47 +10,30 @@ import BodyTypeResult from "@/components/BodyTypeResult";
 import WorkoutRecommendations from "@/components/WorkoutRecommendations";
 import { User, Activity, Target, Calendar } from "lucide-react";
 
-interface Profile {
-  id: string;
-  user_id: string;
-  email: string | null;
-  full_name: string | null;
-  created_at: string;
-}
-
 const Dashboard = () => {
-  const [profile, setProfile] = useState<Profile | null>(null);
   const [isProcessing, setIsProcessing] = useState(false);
   const [result, setResult] = useState<{
     bodyType: 'Ectomorph' | 'Mesomorph' | 'Endomorph';
     confidence: number;
   } | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
   const { user } = useAuth();
   const { toast } = useToast();
 
-  useEffect(() => {
-    const fetchProfile = async () => {
-      if (user) {
-        const { data, error } = await supabase
-          .from('profiles')
-          .select('*')
-          .eq('user_id', user.id)
-          .maybeSingle();
+  const getInitials = (email: string | undefined): string => {
+    if (!email) return "U";
+    return email.split('@')[0].slice(0, 2).toUpperCase();
+  };
 
-        if (error) {
-          toast({
-            variant: "destructive",
-            title: "Error",
-            description: "Failed to load profile data.",
-          });
-        } else {
-          setProfile(data);
-        }
-      }
-    };
-
-    fetchProfile();
-  }, [user, toast]);
+  const getDisplayName = (user: any): string => {
+    if (user?.user_metadata?.full_name) {
+      return user.user_metadata.full_name;
+    }
+    if (user?.email) {
+      return user.email.split('@')[0];
+    }
+    return "User";
+  };
 
   const handleImageUpload = async (file: File) => {
     setIsProcessing(true);
@@ -84,11 +66,6 @@ const Dashboard = () => {
     });
   };
 
-  const getInitials = (name: string | null | undefined) => {
-    if (!name) return 'U';
-    return name.split(' ').map(n => n[0]).join('').toUpperCase();
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary/10 via-background to-secondary/10">
       <Navbar />
@@ -100,12 +77,12 @@ const Dashboard = () => {
               <div className="flex items-center space-x-4">
                 <Avatar className="h-16 w-16 bg-primary text-primary-foreground">
                   <AvatarFallback className="text-lg font-semibold">
-                    {getInitials(profile?.full_name)}
+                    {getInitials(user?.email)}
                   </AvatarFallback>
                 </Avatar>
                 <div>
                   <CardTitle className="text-2xl">
-                    Welcome back, {profile?.full_name || 'Fitness Enthusiast'}!
+                    Welcome back, {getDisplayName(user)}!
                   </CardTitle>
                   <CardDescription className="text-foreground/70">
                     Ready to discover your body type and optimize your workouts?

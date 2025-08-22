@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
-import { supabase } from '@/integrations/supabase/client';
+
 import { useToast } from '@/hooks/use-toast';
 import { useAuth } from '@/hooks/useAuth';
 import { Eye, EyeOff, Github } from 'lucide-react';
@@ -23,7 +23,7 @@ const Auth = () => {
   });
   
   const { toast } = useToast();
-  const { user } = useAuth();
+  const { user, signIn, signUp } = useAuth();
   const navigate = useNavigate();
 
   // Redirect if already authenticated
@@ -38,28 +38,25 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signInWithPassword({
-        email: loginData.email,
-        password: loginData.password,
-      });
+      const { error } = await signIn(loginData.email, loginData.password);
 
       if (error) {
         toast({
           variant: "destructive",
           title: "Login Failed",
-          description: error.message,
+          description: error,
         });
       } else {
         toast({
           title: "Welcome back!",
-          description: "Successfully logged in.",
+          description: "You have been successfully logged in.",
         });
         navigate('/dashboard');
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "Login Failed",
         description: "An unexpected error occurred.",
       });
     } finally {
@@ -69,12 +66,12 @@ const Auth = () => {
 
   const handleSignup = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (signupData.password !== signupData.confirmPassword) {
       toast({
         variant: "destructive",
         title: "Password Mismatch",
-        description: "Passwords do not match.",
+        description: "Passwords do not match. Please try again.",
       });
       return;
     }
@@ -82,7 +79,7 @@ const Auth = () => {
     if (signupData.password.length < 6) {
       toast({
         variant: "destructive",
-        title: "Weak Password",
+        title: "Password Too Short",
         description: "Password must be at least 6 characters long.",
       });
       return;
@@ -91,33 +88,25 @@ const Auth = () => {
     setIsLoading(true);
 
     try {
-      const { error } = await supabase.auth.signUp({
-        email: signupData.email,
-        password: signupData.password,
-        options: {
-          emailRedirectTo: `${window.location.origin}/dashboard`,
-          data: {
-            full_name: signupData.fullName,
-          }
-        }
-      });
+      const { error } = await signUp(signupData.email, signupData.password, signupData.fullName);
 
       if (error) {
         toast({
           variant: "destructive",
-          title: "Signup Failed",
-          description: error.message,
+          title: "Registration Failed",
+          description: error,
         });
       } else {
         toast({
-          title: "Account Created!",
-          description: "Please check your email to confirm your account.",
+          title: "Registration Successful!",
+          description: "You have been successfully registered and logged in.",
         });
+        navigate('/dashboard');
       }
     } catch (error) {
       toast({
         variant: "destructive",
-        title: "Error",
+        title: "Registration Failed",
         description: "An unexpected error occurred.",
       });
     } finally {
@@ -126,28 +115,11 @@ const Auth = () => {
   };
 
   const handleSocialLogin = async (provider: 'google' | 'github') => {
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider,
-        options: {
-          redirectTo: `${window.location.origin}/dashboard`,
-        },
-      });
-
-      if (error) {
-        toast({
-          variant: "destructive",
-          title: "Social Login Failed",
-          description: error.message,
-        });
-      }
-    } catch (error) {
-      toast({
-        variant: "destructive",
-        title: "Error",
-        description: "An unexpected error occurred.",
-      });
-    }
+    // Mock social login - in production, replace with your backend API
+    toast({
+      title: "Social Login",
+      description: `${provider} login would be handled by your backend API.`,
+    });
   };
 
   return (
