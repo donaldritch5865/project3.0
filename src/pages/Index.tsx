@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
+import { useAuth } from "@/hooks/useAuth";
+import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ImageUpload from "@/components/ImageUpload";
 import BodyTypeResult from "@/components/BodyTypeResult";
@@ -48,6 +50,7 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <Navbar />
       <HeroSection />
       <ImageUpload 
         onImageUpload={handleImageUpload} 
