@@ -1,54 +1,57 @@
 import { Button } from "@/components/ui/button";
 import { ArrowDown } from "lucide-react";
-import heroImage from "@/assets/hero-fitness.jpg";
 
-const HeroSection = () => {
-  const scrollToUpload = () => {
-    const uploadSection = document.getElementById("upload-section");
-    uploadSection?.scrollIntoView({ behavior: "smooth" });
+interface HeroSectionProps {
+  onStartWorkout: () => void;
+  onExploreModels: () => void;
+}
+
+const HeroSection = ({ onStartWorkout, onExploreModels }: HeroSectionProps) => {
+  const scrollToFeatures = () => {
+    const featuresSection = document.getElementById("features-section");
+    featuresSection?.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Background Image with Overlay */}
-      <div 
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat"
-        style={{ backgroundImage: `url(${heroImage})` }}
-      >
-        <div className="absolute inset-0 bg-gradient-to-br from-primary/80 via-accent/60 to-secondary/70" />
-      </div>
+    <section className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-gray-900 via-black to-gray-800">
+      {/* Gradient Overlay */}
+      <div className="absolute inset-0 bg-gradient-to-br from-purple-900/30 via-blue-900/20 to-pink-900/30" />
 
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-7xl font-bold text-white mb-6 leading-tight">
-          Discover Your Body Type &
-          <span className="block bg-gradient-to-r from-primary-glow to-accent bg-clip-text text-transparent">
-            Train Smarter
+      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto">
+        <h1 className="text-6xl md:text-8xl font-bold text-white mb-8 leading-tight">
+          Transform Your
+          <span className="block bg-gradient-to-r from-purple-400 via-pink-400 to-blue-400 bg-clip-text text-transparent">
+            Fitness Journey
           </span>
         </h1>
         
-        <p className="text-xl md:text-2xl text-white/90 mb-8 max-w-2xl mx-auto leading-relaxed">
-          Upload your photo to instantly find if you're Ectomorph, Mesomorph, or Endomorph—and get personalized workout plans.
+        <p className="text-xl md:text-2xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
+          Unlock your potential with AI-powered body analysis and personalized nutrition plans. 
+          Get started with our advanced fitness intelligence platform.
         </p>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Button 
-            variant="hero" 
-            size="lg" 
-            onClick={scrollToUpload}
-            className="group"
+        <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
+          <button
+            onClick={onStartWorkout}
+            className="bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 text-white font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105 shadow-lg"
           >
-            Get Started Now
-            <ArrowDown className="ml-2 h-5 w-5 group-hover:translate-y-1 transition-transform" />
-          </Button>
-          <Button variant="ghost-light" size="lg">
-            Learn More
-          </Button>
+            Start AI Workout
+          </button>
+          <button
+            onClick={onExploreModels}
+            className="bg-transparent border-2 border-white text-white hover:bg-white hover:text-black font-semibold py-4 px-8 rounded-lg text-lg transition-all duration-300 transform hover:scale-105"
+          >
+            Explore AI Models
+          </button>
         </div>
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+      <div 
+        className="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce cursor-pointer"
+        onClick={scrollToFeatures}
+      >
         <ArrowDown className="h-6 w-6 text-white/70" />
       </div>
     </section>
