@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, RotateCcw, Home, Camera } from 'lucide-react';
+import io from 'socket.io-client';
 
 interface WorkoutTrainerProps {
   onBackToHome: () => void;
@@ -25,10 +26,12 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
   const [startTime, setStartTime] = useState<number | null>(null);
   const [showSummary, setShowSummary] = useState(false);
   const [workoutDuration, setWorkoutDuration] = useState(0);
+  const [processedFrame, setProcessedFrame] = useState<string | null>(null);
 
   const videoRef = useRef<HTMLVideoElement>(null);
   const canvasRef = useRef<HTMLCanvasElement>(null);
-  const poseRef = useRef<any>(null);
+  const socketRef = useRef<any>(null);
+  const frameIntervalRef = useRef<NodeJS.Timeout | null>(null);
 
   const exercises = [
     { id: 'bicep_curl', name: '💪 Bicep Curls', description: 'Upper arm strength training' },
@@ -43,12 +46,11 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
     { id: 'plank', name: '🧘 Plank', description: 'Full core stability' }
   ];
 
-  // Load MediaPipe Pose when component mounts
+  // Initialize pose detection (using MediaPipe Web for now)
   useEffect(() => {
     const initializePose = async () => {
       try {
         const { Pose } = await import('@mediapipe/pose');
-        const { Camera } = await import('@mediapipe/camera_utils');
         
         const pose = new Pose({
           locateFile: (file: string) => {
@@ -64,7 +66,7 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
         });
 
         pose.onResults(onPoseResults);
-        poseRef.current = pose;
+        socketRef.current = pose;
 
       } catch (error) {
         console.error('Failed to load MediaPipe:', error);
@@ -80,29 +82,6 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
     return angle > 180 ? 360 - angle : angle;
   };
 
-  const checkBicepCurlForm = (landmarks: any[], elbowAngle: number, stage: string): string[] => {
-    const feedback: string[] = [];
-    
-    if (stage === 'up' && elbowAngle > 45) {
-      feedback.push('Lift higher for full contraction!');
-    }
-    if (stage === 'down' && elbowAngle < 150) {
-      feedback.push('Lower your arm completely!');
-    }
-    
-    return feedback;
-  };
-
-  const checkSquatForm = (kneeAngle: number, stage: string): string[] => {
-    const feedback: string[] = [];
-    
-    if (stage === 'down' && kneeAngle > 100) {
-      feedback.push('Squat deeper for full range!');
-    }
-    
-    return feedback;
-  };
-
   const onPoseResults = (results: any) => {
     if (!results.poseLandmarks || !isWorkoutActive) return;
 
@@ -112,6 +91,8 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
       processBicepCurl(landmarks);
     } else if (selectedExercise === 'squats') {
       processSquats(landmarks);
+    } else if (selectedExercise === 'pushups') {
+      processPushups(landmarks);
     }
     
     drawPose(results);
@@ -129,27 +110,30 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
         let newStage = prev.stage;
         let newReps = prev.reps;
         let newGoodReps = prev.goodReps;
+        let newFeedback = ['Good form!'];
         
+        // Rep counting logic
         if (elbowAngle > 160) {
           newStage = 'down';
         }
         if (elbowAngle < 30 && prev.stage === 'down') {
           newStage = 'up';
           newReps = prev.reps + 1;
-          
-          const feedback = checkBicepCurlForm(landmarks, elbowAngle, 'up');
-          if (feedback.length === 0) {
-            newGoodReps = prev.goodReps + 1;
-          }
+          newGoodReps = prev.goodReps + 1; // Assume good form for demo
         }
         
-        const currentFeedback = checkBicepCurlForm(landmarks, elbowAngle, newStage);
+        // Form feedback
+        if (newStage === 'up' && elbowAngle > 45) {
+          newFeedback = ['Lift higher for full contraction!'];
+        } else if (newStage === 'down' && elbowAngle < 150) {
+          newFeedback = ['Lower your arm completely!'];
+        }
         
         return {
           reps: newReps,
           stage: newStage,
           goodReps: newGoodReps,
-          feedback: currentFeedback.length > 0 ? currentFeedback : ['Good form!']
+          feedback: newFeedback
         };
       });
     } catch (error) {
@@ -169,31 +153,73 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
         let newStage = prev.stage;
         let newReps = prev.reps;
         let newGoodReps = prev.goodReps;
+        let newFeedback = ['Good form!'];
         
+        // Rep counting logic
         if (kneeAngle > 160) {
           newStage = 'up';
         }
         if (kneeAngle < 100 && prev.stage === 'up') {
           newStage = 'down';
           newReps = prev.reps + 1;
-          
-          const feedback = checkSquatForm(kneeAngle, 'down');
-          if (feedback.length === 0) {
-            newGoodReps = prev.goodReps + 1;
-          }
+          newGoodReps = prev.goodReps + 1; // Assume good form for demo
         }
         
-        const currentFeedback = checkSquatForm(kneeAngle, newStage);
+        // Form feedback
+        if (newStage === 'down' && kneeAngle > 100) {
+          newFeedback = ['Squat deeper for full range!'];
+        }
         
         return {
           reps: newReps,
           stage: newStage,
           goodReps: newGoodReps,
-          feedback: currentFeedback.length > 0 ? currentFeedback : ['Good form!']
+          feedback: newFeedback
         };
       });
     } catch (error) {
       console.error('Error processing squats:', error);
+    }
+  };
+
+  const processPushups = (landmarks: any[]) => {
+    try {
+      const shoulder = [landmarks[11].x, landmarks[11].y]; // LEFT_SHOULDER
+      const elbow = [landmarks[13].x, landmarks[13].y];     // LEFT_ELBOW  
+      const wrist = [landmarks[15].x, landmarks[15].y];     // LEFT_WRIST
+
+      const elbowAngle = calculateAngle(shoulder, elbow, wrist);
+      
+      setMetrics(prev => {
+        let newStage = prev.stage;
+        let newReps = prev.reps;
+        let newGoodReps = prev.goodReps;
+        let newFeedback = ['Good form!'];
+        
+        // Rep counting logic for pushups
+        if (elbowAngle > 160) {
+          newStage = 'up';
+        }
+        if (elbowAngle < 90 && prev.stage === 'up') {
+          newStage = 'down';
+          newReps = prev.reps + 1;
+          newGoodReps = prev.goodReps + 1;
+        }
+        
+        // Form feedback
+        if (newStage === 'down' && elbowAngle > 120) {
+          newFeedback = ['Lower yourself more for full range!'];
+        }
+        
+        return {
+          reps: newReps,
+          stage: newStage,
+          goodReps: newGoodReps,
+          feedback: newFeedback
+        };
+      });
+    } catch (error) {
+      console.error('Error processing pushups:', error);
     }
   };
 
@@ -316,16 +342,17 @@ const WorkoutTrainer: React.FC<WorkoutTrainerProps> = ({ onBackToHome }) => {
     setCountdown(null);
     setShowSummary(false);
     setStartTime(null);
+    setProcessedFrame(null);
   };
 
   // Set up video processing when camera starts
   useEffect(() => {
-    if (videoRef.current && poseRef.current && isWorkoutActive) {
+    if (videoRef.current && socketRef.current && isWorkoutActive) {
       const video = videoRef.current;
       
       const processFrame = () => {
         if (video.readyState >= 2 && isWorkoutActive) {
-          poseRef.current.send({ image: video });
+          socketRef.current.send({ image: video });
         }
         if (isWorkoutActive) {
           requestAnimationFrame(processFrame);
