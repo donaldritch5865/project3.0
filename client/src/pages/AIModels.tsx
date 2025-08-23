@@ -2,10 +2,12 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import WorkoutTrainer from "@/components/WorkoutTrainer";
 import { Camera, Utensils, Dumbbell } from "lucide-react";
 
 const AIModels = () => {
   const navigate = useNavigate();
+  const [showWorkoutTrainer, setShowWorkoutTrainer] = useState(false);
 
   const models = [
     {
@@ -52,8 +54,8 @@ const AIModels = () => {
         "Progress tracking",
         "Voice coaching"
       ],
-      buttonText: "Coming Soon",
-      available: false,
+      buttonText: "Start Workout Session",
+      available: true,
       gradient: "from-green-500 to-teal-500"
     }
   ];
@@ -61,8 +63,18 @@ const AIModels = () => {
   const handleModelSelect = (modelId: string) => {
     if (modelId === "body-type" || modelId === "diet-plan") {
       navigate(`/?model=${modelId}`);
+    } else if (modelId === "workout-trainer") {
+      setShowWorkoutTrainer(true);
     }
   };
+
+  const handleBackToModels = () => {
+    setShowWorkoutTrainer(false);
+  };
+
+  if (showWorkoutTrainer) {
+    return <WorkoutTrainer onBackToHome={handleBackToModels} />;
+  }
 
   return (
     <div className="min-h-screen bg-black">
