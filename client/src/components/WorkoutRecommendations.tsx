@@ -1,6 +1,3 @@
-import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
 import { Dumbbell, Zap, Target, User } from "lucide-react";
 
 interface WorkoutRecommendationsProps {
@@ -54,13 +51,13 @@ const WorkoutRecommendations = ({ selectedBodyType }: WorkoutRecommendationsProp
   ];
 
   return (
-    <section className="py-20 px-6 bg-gradient-to-br from-background via-muted/30 to-background">
+    <section className="py-20 px-6">
       <div className="max-w-6xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-foreground">
+          <h2 className="text-4xl md:text-5xl font-bold mb-6 text-white">
             Personalized Workout Plans
           </h2>
-          <p className="text-xl text-muted-foreground max-w-3xl mx-auto">
+          <p className="text-xl text-gray-300 max-w-3xl mx-auto">
             Each body type responds differently to exercise. Choose the plan that matches your natural physique for optimal results.
           </p>
         </div>
@@ -69,51 +66,51 @@ const WorkoutRecommendations = ({ selectedBodyType }: WorkoutRecommendationsProp
           {workoutPlans.map((plan) => {
             const IconComponent = plan.icon;
             return (
-              <Card
+              <div
                 key={plan.bodyType}
-                className={`p-6 relative overflow-hidden transition-all duration-500 hover:scale-105 ${
+                className={`p-6 relative overflow-hidden transition-all duration-500 hover:scale-105 bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border ${
                   plan.recommended 
-                    ? 'shadow-strong ring-2 ring-primary/50 bg-gradient-to-br from-card to-primary/5' 
-                    : 'shadow-medium hover:shadow-strong'
+                    ? 'border-purple-500/50 shadow-2xl shadow-purple-500/20' 
+                    : 'border-gray-700/50 shadow-xl hover:border-purple-500/30'
                 }`}
               >
                 {plan.recommended && (
-                  <Badge className="absolute top-4 right-4 bg-gradient-to-r from-primary to-secondary text-white">
+                  <div className="absolute top-4 right-4 bg-gradient-to-r from-purple-500 to-pink-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                     Recommended for You
-                  </Badge>
+                  </div>
                 )}
 
                 <div className="space-y-6">
                   {/* Icon and Header */}
                   <div className="text-center">
-                    <div className={`mx-auto w-16 h-16 bg-gradient-to-br ${plan.color} rounded-full flex items-center justify-center shadow-medium mb-4`}>
+                    <div className={`mx-auto w-16 h-16 bg-gradient-to-br ${plan.color} rounded-full flex items-center justify-center shadow-lg mb-4`}>
                       <IconComponent className="h-8 w-8 text-white" />
                     </div>
-                    <h3 className="text-2xl font-bold text-foreground mb-2">
+                    <h3 className="text-2xl font-bold text-white mb-2">
                       {plan.bodyType}
                     </h3>
-                    <Badge variant="outline" className="text-sm">
+                    <div className="bg-gray-700 border border-gray-600 text-gray-300 px-3 py-1 rounded-full text-sm">
                       {plan.focus}
-                    </Badge>
+                    </div>
                   </div>
 
                   {/* Description */}
                   <div>
-                    <h4 className="font-semibold text-foreground mb-2">
+                    <h4 className="font-semibold text-white mb-2">
                       {plan.title}
                     </h4>
-                    <p className="text-muted-foreground text-sm">
+                    <p className="text-gray-300 text-sm">
                       {plan.description}
                     </p>
                   </div>
 
                   {/* Exercise List */}
-                  <div className="bg-gradient-to-br from-muted/20 to-muted/40 p-4 rounded-lg">
-                    <h5 className="font-medium text-foreground mb-3 text-sm">Key Training Elements:</h5>
+                  <div className="bg-gray-800/50 p-4 rounded-lg border border-gray-700">
+                    <h5 className="font-medium text-white mb-3 text-sm">Key Training Elements:</h5>
                     <ul className="space-y-2">
                       {plan.exercises.map((exercise, index) => (
-                        <li key={index} className="text-muted-foreground text-sm flex items-start gap-2">
-                          <Dumbbell className="h-3 w-3 mt-1 flex-shrink-0 text-primary" />
+                        <li key={index} className="text-gray-300 text-sm flex items-start gap-2">
+                          <Dumbbell className="h-3 w-3 mt-1 flex-shrink-0 text-cyan-400" />
                           {exercise}
                         </li>
                       ))}
@@ -121,14 +118,17 @@ const WorkoutRecommendations = ({ selectedBodyType }: WorkoutRecommendationsProp
                   </div>
 
                   {/* Action Button */}
-                  <Button 
-                    variant={plan.recommended ? "hero" : "outline"} 
-                    className="w-full"
+                  <button 
+                    className={`w-full py-3 px-6 rounded-lg font-semibold transition-all duration-300 transform hover:scale-105 ${
+                      plan.recommended 
+                        ? 'bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 text-white' 
+                        : 'bg-gray-700 hover:bg-gray-600 text-white border border-gray-600'
+                    }`}
                   >
                     Get {plan.bodyType} Plan
-                  </Button>
+                  </button>
                 </div>
-              </Card>
+              </div>
             );
           })}
         </div>
