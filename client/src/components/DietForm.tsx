@@ -149,12 +149,12 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
 
   return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg p-8 animate-fade-in">
+      <div className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl border border-gray-700/50 shadow-2xl p-8">
         <div className="mb-8">
-          <h2 className="text-3xl font-bold text-gray-900 dark:text-white mb-2">
+          <h2 className="text-3xl font-bold text-white mb-2">
             Tell us about yourself
           </h2>
-          <p className="text-gray-600 dark:text-gray-400">
+          <p className="text-gray-300">
             Provide your details to get a personalized diet plan
           </p>
         </div>
@@ -163,7 +163,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
           {/* Basic Information */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Calculator className="w-4 h-4 inline mr-2" />
                 Age (years)
               </label>
@@ -171,7 +171,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
                 type="number"
                 value={formData.age}
                 onChange={(e) => handleInputChange('age', parseInt(e.target.value))}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${errors.age ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} dark:bg-gray-700 dark:text-white`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.age ? 'border-red-500' : 'border-gray-600'} bg-gray-800 text-white placeholder:text-gray-400`}
                 min="16"
                 max="100"
                 required
@@ -185,14 +185,14 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Height (cm)
               </label>
               <input
                 type="number"
                 value={formData.height}
                 onChange={(e) => handleInputChange('height', parseInt(e.target.value))}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${errors.height ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} dark:bg-gray-700 dark:text-white`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.height ? 'border-red-500' : 'border-gray-600'} bg-gray-800 text-white placeholder:text-gray-400`}
                 min="100"
                 max="250"
                 required
@@ -206,14 +206,14 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Current Weight (kg)
               </label>
               <input
                 type="number"
                 value={formData.currentWeight}
                 onChange={(e) => handleInputChange('currentWeight', parseInt(e.target.value))}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${errors.currentWeight ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} dark:bg-gray-700 dark:text-white`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.currentWeight ? 'border-red-500' : 'border-gray-600'} bg-gray-800 text-white placeholder:text-gray-400`}
                 min="30"
                 max="300"
                 required
@@ -227,7 +227,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Target className="w-4 h-4 inline mr-2" />
                 Target Weight (kg)
               </label>
@@ -235,7 +235,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
                 type="number"
                 value={formData.targetWeight}
                 onChange={(e) => handleInputChange('targetWeight', parseInt(e.target.value))}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${errors.targetWeight ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} dark:bg-gray-700 dark:text-white`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.targetWeight ? 'border-red-500' : 'border-gray-600'} bg-gray-800 text-white placeholder:text-gray-400`}
                 min="30"
                 max="300"
                 required
@@ -259,13 +259,13 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
           {/* Goals and Preferences */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Fitness Goal
               </label>
               <select
                 value={formData.fitnessGoal}
                 onChange={(e) => handleInputChange('fitnessGoal', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white"
                 required
               >
                 <option value="lose_weight">Lose Weight</option>
@@ -276,13 +276,13 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Dietary Preference
               </label>
               <select
                 value={formData.dietaryPreference}
                 onChange={(e) => handleInputChange('dietaryPreference', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white"
                 required
               >
                 <option value="vegetarian">Vegetarian</option>
@@ -296,13 +296,13 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Sugar Intake Frequency
               </label>
               <select
                 value={formData.sugarIntake}
                 onChange={(e) => handleInputChange('sugarIntake', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white"
                 required
               >
                 <option value="low">Low (Rarely)</option>
@@ -312,7 +312,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Droplets className="w-4 h-4 inline mr-2" />
                 Daily Water Intake (glasses)
               </label>
@@ -320,7 +320,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
                 type="number"
                 value={formData.waterIntake}
                 onChange={(e) => handleInputChange('waterIntake', parseInt(e.target.value))}
-                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${errors.waterIntake ? 'border-red-500' : 'border-gray-300 dark:border-gray-600'} dark:bg-gray-700 dark:text-white`}
+                className={`w-full px-4 py-2 border rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent ${errors.waterIntake ? 'border-red-500' : 'border-gray-600'} bg-gray-800 text-white placeholder:text-gray-400`}
                 min="1"
                 max="20"
                 required
@@ -336,12 +336,12 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
 
           {/* Optional Information */}
           <div className="space-y-6">
-            <h3 className="text-xl font-semibold text-gray-900 dark:text-white">
+            <h3 className="text-xl font-semibold text-white">
               Additional Information (Optional)
             </h3>
             
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Calendar className="w-4 h-4 inline mr-2" />
                 Upcoming Event
               </label>
@@ -349,13 +349,13 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
                 type="text"
                 value={formData.upcomingEvent}
                 onChange={(e) => handleInputChange('upcomingEvent', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white placeholder:text-gray-400"
                 placeholder="e.g., Wedding, Marathon, Beach vacation"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 <Activity className="w-4 h-4 inline mr-2" />
                 Sports Interest
               </label>
@@ -363,19 +363,19 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
                 type="text"
                 value={formData.sportsInterest}
                 onChange={(e) => handleInputChange('sportsInterest', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white placeholder:text-gray-400"
                 placeholder="e.g., Running, Swimming, Yoga, Gym"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-gray-300 mb-2">
                 Past Fitness Issues
               </label>
               <textarea
                 value={formData.pastFitnessIssues}
                 onChange={(e) => handleInputChange('pastFitnessIssues', e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent dark:bg-gray-700 dark:text-white"
+                className="w-full px-4 py-2 border border-gray-600 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent bg-gray-800 text-white placeholder:text-gray-400"
                 rows={3}
                 placeholder="Any past injuries, medical conditions, or dietary restrictions"
               />
@@ -386,7 +386,7 @@ Expected to reach target weight by: ${new Date(Date.now() + 90 * 24 * 60 * 60 * 
             <button
               type="submit"
               disabled={loading}
-              className="bg-primary hover:bg-primary/90 text-white font-semibold text-lg px-12 py-4 rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 hover:from-purple-600 hover:via-pink-600 hover:to-blue-600 text-white font-semibold text-lg px-12 py-4 rounded-lg transition-all duration-300 transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? 'Generating Your Plan...' : 'Generate My Diet Plan'}
             </button>
