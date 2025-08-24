@@ -16,6 +16,16 @@ const Navbar = () => {
     navigate('/auth');
   };
 
+  const scrollToWorkoutTrainer = () => {
+    const workoutTrainerElement = document.getElementById('workout-trainer');
+    if (workoutTrainerElement) {
+      workoutTrainerElement.scrollIntoView({ 
+        behavior: 'smooth',
+        block: 'center'
+      });
+    }
+  };
+
   const getInitials = (email: string | undefined) => {
     if (!email) return 'U';
     const name = email.split('@')[0];
@@ -45,9 +55,12 @@ const Navbar = () => {
           <Link to="/ai-models" className="text-white hover:text-purple-400 transition-colors font-medium">
             AI Models
           </Link>
-          <Link to="/workout" className="text-white hover:text-purple-400 transition-colors font-medium">
+          <button 
+            onClick={scrollToWorkoutTrainer}
+            className="text-white hover:text-purple-400 transition-colors font-medium"
+          >
             Workout
-          </Link>
+          </button>
           
           {user ? (
             <DropdownMenu>
@@ -109,9 +122,12 @@ const Navbar = () => {
             <Link to="/ai-models" className="block text-white hover:text-purple-400 transition-colors font-medium">
               AI Models
             </Link>
-            <Link to="/workout" className="block text-white hover:text-purple-400 transition-colors font-medium">
+            <button 
+              onClick={scrollToWorkoutTrainer}
+              className="block text-white hover:text-purple-400 transition-colors font-medium text-left"
+            >
               Workout
-            </Link>
+            </button>
             {!user && (
               <Link to="/auth" className="block bg-gradient-to-r from-purple-500 via-pink-500 to-blue-500 text-white font-semibold py-2 px-6 rounded-lg text-center">
                 Get Started

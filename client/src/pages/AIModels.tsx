@@ -100,6 +100,7 @@ const AIModels = () => {
             {models.map((model) => (
               <div 
                 key={model.id}
+                id={model.id === 'workout-trainer' ? 'workout-trainer' : undefined}
                 className="bg-gradient-to-br from-gray-900 to-gray-800 rounded-2xl p-8 border border-gray-700/50 hover:border-purple-500/50 transition-all duration-300 transform hover:scale-105"
               >
                 {/* Icon */}
